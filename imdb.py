@@ -7,8 +7,14 @@ import datetime
 #Run script
 def get_imdb_url(title):
     movieTitle = urlencode({'q':title})
-    url = 'https://www.imdb.com/find?' + movieTitle
-    html = urlopen(url).read().decode()
+    req = Request(
+        url='https://www.imdb.com/find?' + movieTitle, 
+        data=None, 
+        headers={
+            'User-Agent': 'Chrome/35.0.1916.47'
+        }
+    )
+    html = urlopen(req).read().decode()
     soup = BeautifulSoup(html, "html.parser")
 
     # find all movies in soup
@@ -19,7 +25,14 @@ def get_imdb_url(title):
         return 'https://www.imdb.com' + movieUrl
 
 def get_imdb_score(imdbUrl):
-    movieHtml = urlopen(imdbUrl).read().decode()
+    req = Request(
+        url=imdbUrl, 
+        data=None, 
+        headers={
+            'User-Agent': 'Chrome/35.0.1916.47'
+        }
+    )
+    movieHtml = urlopen(req).read().decode()
     detailsSoup = BeautifulSoup(movieHtml, "html.parser")
     ratings = detailsSoup.select("div[data-testid^=hero-rating-bar__aggregate-rating__score]")
     if len(ratings) > 0:
